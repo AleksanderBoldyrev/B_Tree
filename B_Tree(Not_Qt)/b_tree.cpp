@@ -14,7 +14,7 @@ void B_Tree::print()
 		//Page* buff;
         for (uint k = 0; k<h*2; k++)
             space+=" ";
-        cout << space;
+        *str << space;
 		h--;
 		v2.clear();
         for (uint i = 0; i < v.size(); i++)
@@ -24,23 +24,23 @@ void B_Tree::print()
 				for (uint j = 0; j < v[i]->GetSize(); j++)
 				{
 					v2.push_back(v[i]->GetChildren(j));
-					cout << v[i]->GetKey(j) << ";";
+					*str << v[i]->GetKey(j) << ";";
 					if (v[i]->GetChildren(j) != NULL)
 						work = true;
 				}
 				v2.push_back(v[i]->GetChildren(v[i]->GetSize()));
 				if (v[i]->GetChildren(v[i]->GetSize()) != NULL)
 					work = true;
-				cout << "  ";
+				*str << "  ";
 			}
 			else
 			{
-				cout << "N;" << " ";
+				*str << "N;" << " ";
 				v2.push_back(NULL);
 			}
         }
-        cout << endl;
-        cout << space;
+        *str << endl;
+        *str << space;
         if (work)
             for (uint i = 0; i < v.size(); i++)
             {
@@ -50,17 +50,17 @@ void B_Tree::print()
 					for (uint j = 0; j <= s; j++)
 					{
 						if ((float)j < s / 2.0)
-							cout << "/" << " ";
+							*str << "/" << " ";
 						else if ((float)j == s / 2.0)
-							cout << "|" << " ";
+							*str << "|" << " ";
 						else
-							cout << "\\" << " ";
+							*str << "\\" << " ";
 					}
 				}
 				else
-					cout << "   ";
+					*str << "   ";
             }
-		cout << endl;
+		*str << endl;
 		v = v2;
 		v2.clear();
     }
@@ -68,17 +68,9 @@ void B_Tree::print()
 
 bool B_Tree::Paste(const int val)
 {
-	//cout << "======================================================================" << endl;
-	//print();
-	//cout << " before paste " << endl;
 	if (this->root->AddKey(val))
 	{
-		//print();
-		//cout << " after paste " << endl;
 		Balance();
-		//print();
-		//cout << " after balance " << endl;
-		//cout << "===================================================================" << endl;
 		return true;
 	}
     return false;
@@ -103,8 +95,6 @@ bool B_Tree::SwapL()
 	{
 		root = t;
 		return true;
-		//print();
-		//cout << "SWAP L" << endl;
 	}
 	return false;
 }
@@ -116,8 +106,6 @@ bool B_Tree::SwapR()
 	{
 		root = t;
 		return true;
-		//print();
-		//cout << "SWAP R" << endl;
 	}
 	return false;
 }
@@ -131,8 +119,6 @@ bool B_Tree::TurnRight()
 		{
 			root = pp;
 			return true;
-			//print();
-			//cout << "TURN R" << endl;
 		}
 	}
 	return false;
@@ -147,8 +133,6 @@ bool B_Tree::TurnLeft()
 		{
 			root = pp;
 			return true;
-			//print();
-			//cout << "TURN L" << endl;
 		}
 	}
 	return false;
@@ -164,11 +148,7 @@ void B_Tree::Balance()
 	int v;
 	Page* r = new Page(power);
 	Page* temp = NULL;
-	//cout << "before" << endl;
-	//print();
 	bool isNotBalanced = this->root->Balance(&v, r);
-	//cout << "after" << endl;
-	//print();
 	while (isNotBalanced)
 	{
 		if (r->GetSize() > 0)
@@ -184,40 +164,14 @@ void B_Tree::Balance()
 			delete r;
 		r = new Page(power);
 		r->RemoveChildren(0);
-		//print();
-		//cout << "root - > balance" << endl;
-		//print();
-		//cout << "S1" << endl;
-		//print();
-		//cout << "after" << endl;
-		//print();
-		//cout << "S2" << endl;
 		bool kk = true;
 		while (kk)
 		{
-			//cout << "S2.1" << endl;
-			
 			kk=SwapL();
-			//print();
-			//cout << kk << " 1 " << root->keys[0] << endl;
-			kk=SwapR();
-			//print();
-			//cout << kk << " 2 " << root->keys[0] << endl;
+			kk = SwapR();
 			kk=TurnLeft();
-			//print();
-			//cout << kk << " 3 " << root->keys[0] << endl;
 			kk=TurnRight();
-			//print();
-			//cout << kk << " 4 " << root->keys[0] << endl;
-			//if (needTurns())
-				//kk = true;
 		}
-		//print();
-		//cout << "SWAPS" << endl;
-		//if(needMerge()) merge();
-		//print();
-		//cout << "MERGE" << endl;
-
 		isNotBalanced = this->root->Balance(&v, r);
 	}
 	if (r != NULL)
@@ -252,21 +206,23 @@ bool B_Tree::SetVal(const uint pos, const int val)
     return false;
 }
 
-B_Tree::B_Tree(int pw)
+B_Tree::B_Tree(int pw, std::ostream& s)
 {
     power = pw;
     height = 16;
     root = new Page(t);
+	str = &s;
 }
 
-B_Tree::B_Tree()
+B_Tree::B_Tree(std::ostream& s)
 {
     power = 2;
     height = 16;
     root = new Page(t);
+	str = &s;
 }
 
 B_Tree::~B_Tree()
 {
-    if (root != NULL) delete root;
+	if (root != NULL) delete root;
 }

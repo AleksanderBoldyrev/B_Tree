@@ -18,6 +18,7 @@ private:
     uint power;
     uint height;
     const uint t = 2;
+	std::ostream* str;
 public:
 	bool SwapL();
 	bool SwapR();
@@ -37,8 +38,8 @@ public:
 
     void print();
 
-    B_Tree(int pw);
-    B_Tree();
+    B_Tree(int pw, std::ostream& s);
+    B_Tree(std::ostream& s);
     ~B_Tree();
 };
 

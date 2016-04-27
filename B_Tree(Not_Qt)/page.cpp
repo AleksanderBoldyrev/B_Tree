@@ -25,7 +25,6 @@ uint Page::GetDepth()
 			if (max < len) max = len;
 		}
 	}
-	//if (max == 0) max = 1;
 	return max+1;
 }
 
@@ -146,12 +145,6 @@ bool Page::AddKey(int val)
 				return true;
 			}
 		}
-		/*for (int i = 0; i < child.size(); i++)
-		{
-			if (child[i] != NULL)
-				if (child[i]->AddKey(val))
-					return true;
-		}*/
 	}
 	else
 	{
@@ -184,64 +177,7 @@ bool Page::AddKey(int val)
 			return true;
 		}
 	}
-
 	return false;
-
-/*	bool pp = false;
-	if (keys.size() < (2 * _t + 1))
-	{
-		if ()
-	}
-	else
-		pp = true;
-
-	if (pp)
-	{
-	}
-
-	return false;
-
-    if (keys.size()<(2*_t+1) && )
-    {
-        this->keys.push_back(val);
-        child.push_back(NULL);
-        return true;
-    }
-    else
-    {
-        for (int i = 0; i < keys.size(); i++)
-        {
-            bool split=false;
-            if (val < keys[i])
-            {
-                split=true;
-                if (this->child[i]!=NULL)
-                {
-                        return this->child[i]->AddKey(val);
-                }
-                else
-                {
-                    this->child[i] = new Page(_t);
-                    return this->child[i]-> AddKey(val);
-                }
-            }
-			else if (val > keys[i] && (i == (keys.size() - 1)))
-			{
-				split = true;
-				if (this->child[i + 1] != NULL)
-				{
-					return this->child[i + 1]->AddKey(val);
-				}
-
-				else
-				{
-					this->child[i + 1] = new Page(_t);
-					return this->child[i + 1]->AddKey(val);
-				}
-			}
-        }
-    }
-    return false;*/
 }
 
 uint Page::GetPos(const int val)
@@ -335,7 +271,6 @@ Page* Page::SwapR()
 		if (ls >= rs + 2)
 		{
 			Page* l = child[0];
-			//if (this->child[0] != NULL)
 			{
 				if (l->child[l->GetSize()] == NULL)
 				{
@@ -443,8 +378,6 @@ void Page::merge()
 					buff->keys.erase(keys.begin());
 				}
 				buff->child.erase(child.begin());
-				//buff->child.clear();
-				//buff->keys.clear();
 				break;
 			}
 			if (ok) break;
@@ -456,8 +389,6 @@ bool Page::Balance(int* val, Page* rw)
 {
     if (this->keys.size() == 2*_t+1)
     {
-		//if (rw == NULL)
-		//	rw = new Page(_t);
 		*val = this->keys.at(_t);
 		this->keys.erase(keys.begin()+_t);
 		rw->RemoveChildren(0);

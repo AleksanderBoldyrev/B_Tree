@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#include <fstream>
 
 typedef unsigned int uint;
 
@@ -24,31 +25,31 @@ bool contains(vector<int>* v, int val)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void testSorted(int c)
+void testSorted(int c, std::ostream& s)
 {
 	clock_t b;
 	clock_t e;
-	B_Tree* tr = new B_Tree();
-	cout << endl << "Adding "<< c << " elements sorted: " << endl;
-	b = clock();
+	B_Tree* tr = new B_Tree(s);
+	s << endl << "Adding "<< c << " elements sorted: " << endl;
+ 	b = clock();
 	for (int i = 1; i <= c; i++)
 	{
 		tr->Paste(i);
 	}
 	e = clock();
-	cout << "Time: " << (e - b) / 1000.0 << " seconds" << endl;
+	s << "Time: " << (e - b) / 1000.0 << " seconds" << endl;
 	//tr->print();
 	delete tr;
 }
 //////////////////////////////////////////////////////////////////////////////
 
-void testUnsorted(int c)
+void testUnsorted(int c, std::ostream& s)
 {
 	vector<int> v;
 	clock_t b;
 	clock_t e;
-	B_Tree* tr = new B_Tree();
-	cout << endl << "Adding " << c << " elements unsorted: " << endl;
+	B_Tree* tr = new B_Tree(s);
+	s << endl << "Adding " << c << " elements unsorted: " << endl;
 	v.clear();
 	srand(time(NULL));
 	unsigned int t;
@@ -64,7 +65,7 @@ void testUnsorted(int c)
 		v.push_back(t);
 	}
 	e = clock();
-	cout << "Time: " << (e - b) / 1000.0 << " seconds" << endl;
+	s << "Time: " << (e - b) / 1000.0 << " seconds" << endl;
 	//tr->print();
 	delete tr;
 }
@@ -72,11 +73,23 @@ void testUnsorted(int c)
 
 int main()
 {
-	for (int k = 25; k < 20000; k *= 2)
+	std::ostream* s;
+	std::ofstream f("result.txt", std::ofstream::out);
+	// modify this to use another outout thread
+	s = &cout;
+
+	B_Tree* tr = new B_Tree(*s);
+	for (int j = 1; j < 66; j++)
 	{
-		testSorted(k);
-		testUnsorted(k);
+		tr->Paste(j);
 	}
+	tr->print();
+	for (int k = 25; k < 5000; k *= 2)
+	{
+		testSorted(k, *s);
+		testUnsorted(k, *s);
+	}
+	f.close();
 	system("pause");
     return 0;
 }
