@@ -71,11 +71,36 @@ void testUnsorted(int c, std::ostream& s)
 }
 //////////////////////////////////////////////////////////////////////////////
 
+void testZeroLen(int c, std::ostream& s)
+{
+	vector<int> v;
+	clock_t b;
+	clock_t e;
+	B_Tree* tr = new B_Tree(s);
+	s << endl << "Adding " << c << " elements unsorted: " << endl;
+	v.clear();
+	srand(time(NULL));
+	unsigned int t;
+	b = clock();
+	t = rand() % c;
+	while (contains(&v, t))
+	{
+		t = rand() % c;
+	}
+	tr->Paste(t);
+	v.push_back(t);
+	e = clock();
+	s << "Time: " << (e - b) / 1000.0 << " seconds" << endl;
+	//tr->print();
+	delete tr;
+}
+//////////////////////////////////////////////////////////////////////////////
+
 int main()
 {
 	std::ostream* s;
 	std::ofstream f("result.txt", std::ofstream::out);
-	// modify this to use another outout thread
+	// modify this to use another output thread
 	s = &cout;
 
 	B_Tree* tr = new B_Tree(*s);
@@ -89,6 +114,7 @@ int main()
 		testSorted(k, *s);
 		testUnsorted(k, *s);
 	}
+	testZeroLen(1, *s);
 	f.close();
 	system("pause");
     return 0;
