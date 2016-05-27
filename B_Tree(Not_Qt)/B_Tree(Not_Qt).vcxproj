@@ -145,10 +145,12 @@
     <ClCompile Include="b_tree.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="page.cpp" />
+    <ClCompile Include="TreeWalker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="b_tree.h" />
     <ClInclude Include="page.h" />
+    <ClInclude Include="TreeWalker.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

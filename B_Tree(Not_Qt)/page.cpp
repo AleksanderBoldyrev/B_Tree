@@ -196,7 +196,7 @@ uint Page::GetPos(const int val)
 
 bool Page::RemoveKey(const uint id)
 {
-    this->keys.erase(keys.begin()+id);
+	if (keys.size()!=0) this->keys.erase(keys.begin()+id);
     return true;
 }
 
@@ -427,7 +427,7 @@ bool Page::Balance(int* val, Page* rw)
 
 uint Page::GetSize()
 {
-    return keys.size();
+    return (uint)keys.size();
 }
 
 void Page::addToKeys(int val)

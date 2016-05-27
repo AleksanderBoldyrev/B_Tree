@@ -1,6 +1,7 @@
 #ifndef B_TREE_H
 #define B_TREE_H
 
+#include <fstream>
 #include <iostream>
 #include "page.h"
 
@@ -9,7 +10,8 @@ typedef unsigned int uint;
 using std::cin;
 using std::cout;
 using std::endl;
-//using std::vector;
+//using std::ofstream;
+//using std::ostream;
 
 class B_Tree
 {
@@ -18,7 +20,6 @@ private:
     uint power;
     uint height;
     const uint t = 2;
-	std::ostream* str;
 public:
 	bool SwapL();
 	bool SwapR();
@@ -31,15 +32,21 @@ public:
 	bool needMerge();
 	void merge();
 
+	Page* getRoot();
+	uint getHeight();
+
+	//friend std::ostream& operator<<(std::ostream& str, const B_Tree& b);
+
     int GetVal(const uint pos);
     uint GetPos(const int val);
 
     bool SetVal(const uint pos, const int val);
 
-    void print();
+	//template<typename TYPE> inline void printData(TYPE data);
 
-    B_Tree(int pw, std::ostream& s);
-    B_Tree(std::ostream& s);
+    //void print();
+	//B_Tree(int pw, const string file);
+	B_Tree(int pw);
     ~B_Tree();
 };
 

@@ -5,10 +5,13 @@
 
 typedef unsigned int uint;
 
-using namespace std;
+//using namespace std;
 
 #include "b_tree.h"
 #include "page.h"
+#include "TreeWalker.h"
+
+#define TREE_PW 2
 
 bool contains(vector<int>* v, int val)
 {
@@ -22,36 +25,44 @@ bool contains(vector<int>* v, int val)
 	return false;
 }
 
-
+/*test comment*/
 //////////////////////////////////////////////////////////////////////////////
 
-void testSorted(int c, std::ostream& s)
+void testSorted(int c, TreeWalker* trw, std::ostream* out) //const string s)
 {
 	clock_t b;
 	clock_t e;
-	B_Tree* tr = new B_Tree(s);
-	s << endl << "Adding "<< c << " elements sorted: " << endl;
+	B_Tree* tr = new B_Tree(TREE_PW);
+	trw->print(*out, *tr);
+	trw->printData(*out, "\nAdding ");
+	trw->printData(*out, c);
+	trw->printData(*out, " elements sorted: \n");
  	b = clock();
 	for (int i = 1; i <= c; i++)
 	{
 		tr->Paste(i);
 	}
 	e = clock();
-	s << "Time: " << (e - b) / 1000.0 << " seconds" << endl;
-	//tr->print();
+	trw->printData(*out, "Time: ");
+	trw->printData(*out, (e - b) / 1000.0);
+	trw->printData(*out, " seconds\n");
+	trw->print(*out, *tr);
 	delete tr;
 }
 //////////////////////////////////////////////////////////////////////////////
 
-void testUnsorted(int c, std::ostream& s)
+void testUnsorted(int c, TreeWalker* trw, std::ostream* out)// const string s)
 {
 	vector<int> v;
 	clock_t b;
 	clock_t e;
-	B_Tree* tr = new B_Tree(s);
-	s << endl << "Adding " << c << " elements unsorted: " << endl;
+	B_Tree* tr = new B_Tree(TREE_PW);
+	trw->print(*out, *tr);
+	trw->printData(*out, "\nAdding ");
+	trw->printData(*out, c);
+	trw->printData(*out, " elements unsorted: \n");
 	v.clear();
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	unsigned int t;
 	b = clock();
 	for (int i = 1; i <= c; i++)
@@ -65,21 +76,26 @@ void testUnsorted(int c, std::ostream& s)
 		v.push_back(t);
 	}
 	e = clock();
-	s << "Time: " << (e - b) / 1000.0 << " seconds" << endl;
-	//tr->print();
+	trw->printData(*out, "Time: ");
+	trw->printData(*out, (e - b) / 1000.0);
+	trw->printData(*out, " seconds\n");
+	trw->print(*out, *tr);
 	delete tr;
 }
 //////////////////////////////////////////////////////////////////////////////
 
-void testZeroLen(int c, std::ostream& s)
+void testZeroLen(int c, TreeWalker* trw, std::ostream* out)//const string s)
 {
 	vector<int> v;
 	clock_t b;
 	clock_t e;
-	B_Tree* tr = new B_Tree(s);
-	s << endl << "Adding " << c << " elements unsorted: " << endl;
+	B_Tree* tr = new B_Tree(TREE_PW);
+	trw->print(*out, *tr);
+	trw->printData(*out, "\nAdding ");
+	trw->printData(*out, c);
+	trw->printData(*out, " an element: \n");
 	v.clear();
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 	unsigned int t;
 	b = clock();
 	t = rand() % c;
@@ -88,34 +104,61 @@ void testZeroLen(int c, std::ostream& s)
 		t = rand() % c;
 	}
 	tr->Paste(t);
+	if (tr->GetVal(0) != t) trw->printData(*out, "Unsuccessful pasting!");
+	tr->Remove(0);
+	tr->Remove(0);
+	trw->printData(*out, "The element is successfully removed from the tree, additional removing action is skipped.");
 	v.push_back(t);
 	e = clock();
-	s << "Time: " << (e - b) / 1000.0 << " seconds" << endl;
-	//tr->print();
+	trw->printData(*out, "Time: ");
+	trw->printData(*out, (e - b) / 1000.0);
+	trw->printData(*out, " seconds\n");
+	trw->print(*out, *tr);
 	delete tr;
 }
 //////////////////////////////////////////////////////////////////////////////
 
 int main()
 {
-	std::ostream* s;
-	std::ofstream f("result.txt", std::ofstream::out);
-	// modify this to use another output thread
-	s = &cout;
+	
+	std::ofstream* fout;
+	//std::ostream* out = &cout;
 
-	B_Tree* tr = new B_Tree(*s);
+	B_Tree* tr;
+	{
+		tr = new B_Tree(TREE_PW);
+		std::ofstream fff;
+		fff.open("out.txt");
+		fout = &fff;
+	}
+
+	// comment this line to test code with broken ostream 
+	//fout = new std::ofstream("default_file.txt");
+
+	std::ostream* out = fout;
+	TreeWalker* trw = new TreeWalker();
+
+	trw->printData(*out, "An empty tree:    ");
+	trw->print(*out, *tr);
+	
 	for (int j = 1; j < 66; j++)
 	{
 		tr->Paste(j);
 	}
-	tr->print();
-	for (int k = 25; k < 5000; k *= 2)
+	trw->print(*out, *tr);
+	if (tr != NULL)
+		delete tr;
+	for (int k = 25; k < 8000; k *= 2)
 	{
-		testSorted(k, *s);
-		testUnsorted(k, *s);
+		testSorted(k, trw, out);
+		testUnsorted(k, trw, out);
 	}
-	testZeroLen(1, *s);
-	f.close();
+	testZeroLen(1, trw, out);
+
+	if (trw!=NULL)
+		delete trw;
+	fout->close();
+	cout << "Job done, press any key!" << endl;
 	system("pause");
     return 0;
 }

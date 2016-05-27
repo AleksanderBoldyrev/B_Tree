@@ -1,71 +1,5 @@
 #include "b_tree.h"
 
-void B_Tree::print()
-{
-	vector<Page*> v;// = new QList<Page*>();
-	vector<Page*> v2;// = new QList<Page*>();
-    v.push_back(root);
-    bool work = true;
-    uint h = height;
-    while (v.size()>0 && work)
-    {
-        work = false;
-		string space;
-		//Page* buff;
-        for (uint k = 0; k<h*2; k++)
-            space+=" ";
-        *str << space;
-		h--;
-		v2.clear();
-        for (uint i = 0; i < v.size(); i++)
-        {
-			if (v[i] != NULL)
-			{
-				for (uint j = 0; j < v[i]->GetSize(); j++)
-				{
-					v2.push_back(v[i]->GetChildren(j));
-					*str << v[i]->GetKey(j) << ";";
-					if (v[i]->GetChildren(j) != NULL)
-						work = true;
-				}
-				v2.push_back(v[i]->GetChildren(v[i]->GetSize()));
-				if (v[i]->GetChildren(v[i]->GetSize()) != NULL)
-					work = true;
-				*str << "  ";
-			}
-			else
-			{
-				*str << "N;" << " ";
-				v2.push_back(NULL);
-			}
-        }
-        *str << endl;
-        *str << space;
-        if (work)
-            for (uint i = 0; i < v.size(); i++)
-            {
-				if (v[i] != NULL)
-				{
-					uint s = v[i]->GetSize();
-					for (uint j = 0; j <= s; j++)
-					{
-						if ((float)j < s / 2.0)
-							*str << "/" << " ";
-						else if ((float)j == s / 2.0)
-							*str << "|" << " ";
-						else
-							*str << "\\" << " ";
-					}
-				}
-				else
-					*str << "   ";
-            }
-		*str << endl;
-		v = v2;
-		v2.clear();
-    }
-}
-
 bool B_Tree::Paste(const int val)
 {
 	if (this->root->AddKey(val))
@@ -78,8 +12,12 @@ bool B_Tree::Paste(const int val)
 
 bool B_Tree::Remove(const uint pos)
 {
-    if (this->root->RemoveKey(pos))
-        return true;
+	if (this->root->keys.size() != 0)
+	{
+		if (this->root->RemoveKey(pos))
+			return true;
+		return false;
+	}
     return false;
 }
 
@@ -206,23 +144,129 @@ bool B_Tree::SetVal(const uint pos, const int val)
     return false;
 }
 
-B_Tree::B_Tree(int pw, std::ostream& s)
+B_Tree::B_Tree(int pw)
 {
+	//os = new ostream(&out);
+	power = pw;
+	height = 16;
+	root = new Page(t);
+}
+
+/*B_Tree::B_Tree(int pw, const string file)
+{
+	if (file.compare("cout") == 0)
+	{
+		os = &cout;
+	}
+	else
+	{
+		os = new std::ofstream(file, std::ios_base::app);
+		if (os == NULL)
+		{
+			os = &cout;
+			cout << "Error. The IO thread wasn't created. Default output is initialised in std::cout.";
+		}
+	}
     power = pw;
     height = 16;
     root = new Page(t);
-	str = &s;
-}
-
-B_Tree::B_Tree(std::ostream& s)
-{
-    power = 2;
-    height = 16;
-    root = new Page(t);
-	str = &s;
-}
+}*/
 
 B_Tree::~B_Tree()
 {
-	if (root != NULL) delete root;
+	if (root!=NULL) 
+		delete root;
 }
+
+/*void B_Tree::print()
+{
+	*os << *this;
+}
+
+template<typename TYPE> inline void printData(TYPE data)
+{
+	*os << data;
+}*/
+
+Page* B_Tree::getRoot()
+{
+	return this->root;
+}
+
+uint B_Tree::getHeight()
+{
+	return height;
+}
+
+/*std::ostream &operator<<(std::ostream& str, const B_Tree& b)
+{
+	vector<Page*> v;// = new QList<Page*>();
+	vector<Page*> v2;// = new QList<Page*>();
+	v.push_back(b.root);
+	bool work = true;
+	uint h = b.height;
+	if (b.root->keys.size() == 0)
+	{
+		str << "__" << endl;
+		return str;
+	}
+	else
+	while (v.size()>0 && work)
+	{
+		work = false;
+		string space;
+		//Page* buff;
+		for (uint k = 0; k<h * 2; k++)
+			space += " ";
+		str << space;
+		h--;
+		v2.clear();
+		for (uint i = 0; i < v.size(); i++)
+		{
+			if (v[i] != NULL)
+			{
+				for (uint j = 0; j < v[i]->GetSize(); j++)
+				{
+					v2.push_back(v[i]->GetChildren(j));
+					str << v[i]->GetKey(j) << ";";
+					if (v[i]->GetChildren(j) != NULL)
+						work = true;
+				}
+				v2.push_back(v[i]->GetChildren(v[i]->GetSize()));
+				if (v[i]->GetChildren(v[i]->GetSize()) != NULL)
+					work = true;
+				str << "  ";
+			}
+			else
+			{
+				str << "N;" << " ";
+				v2.push_back(NULL);
+			}
+		}
+		str << endl;
+		str << space;
+		if (work)
+			for (uint i = 0; i < v.size(); i++)
+			{
+				if (v[i] != NULL)
+				{
+					uint s = v[i]->GetSize();
+					for (uint j = 0; j <= s; j++)
+					{
+						if ((float)j < s / 2.0)
+							str << "/" << " ";
+						else if ((float)j == s / 2.0)
+							str << "|" << " ";
+						else
+							str << "\\" << " ";
+					}
+				}
+				else
+					str << "   ";
+			}
+		str << endl;
+		v = v2;
+		v2.clear();
+	}
+	return str;
+}*/
